@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviraj Soin AI Spinal Intake – Patient Form</title>
+    <meta name="description"
+        content="Aviraj Soin AI Spinal Intake Form — Patient Demographics. Secure, comprehensive intake for spinal care patients.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ══════════════════════════════════════════════
+           DESIGN TOKENS
+        ══════════════════════════════════════════════ */
+        :root {
+            --teal-dark: #1d6e6e;
+            --teal-mid: #2a9090;
+            --teal-light: #4dbdbd;
+            --teal-pale: #d4eeee;
+            --teal-faint: #edf7f7;
+            --cream: #f5f0e8;
+            --cream-dark: #ede8dc;
+            --parchment: #faf8f4;
+            --white: #ffffff;
+            --text-dark: #1a2e2e;
+            --text-mid: #3d5050;
+            --text-light: #6b8585;
+            --text-muted: #9aadad;
+            --border: rgba(29, 110, 110, 0.15);
+            --border-mid: rgba(29, 110, 110, 0.25);
+            --shadow-card: 0 2px 24px rgba(29, 110, 110, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: Georgia, 'Times New Roman', Times, serif;
+
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--parchment);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ══ PAGE WRAP ══ */
+        .page-wrap {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ══ PROGRESS BAND ══ */
+        .progress-band {
+            background: #236464bf;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 36px 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .back-link {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background-color: #236464bf;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 18px;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex: 1;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 10px;
+            position: relative;
+            flex: 1;
+            cursor: default;
+        }
+
+        /* Beautiful divider lines between steps */
+        .step-node:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.74rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-node.active .step-circle {
+            background: #ffffff;
+            color: #236464;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .step-node.done .step-circle {
+            background: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .step-node.upcoming .step-circle {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .step-label {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .step-node.upcoming .step-label {
+            color: rgba(255, 255, 255, 83%);
+        }
+
+        .step-node.active .step-label {
+            color: #ffffff;
+        }
+
+        .step-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #ffffff;
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* ══ MAIN CONTENT ══ */
+        .main-content {
+            flex: 1;
+            padding: 40px 56px 64px;
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 32px;
+            align-items: start;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ══ FORM CARD ══ */
+        .form-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .card-topbar {
+            /* background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal-mid) 100%); */
+            background-color: #236464bf;
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .topbar-text h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .topbar-text p {
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.68);
+            margin-top: 3px;
+        }
+
+        .form-body {
+            padding: 32px;
+        }
+
+        /* ══ SUBSECTIONS ══ */
+        .subsection {
+            margin-bottom: 36px;
+        }
+
+        .subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-hd {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .subsection-hd .tag {
+            background: #23646454;
+            color: var(--white);
+            font-size: 0.61rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .subsection-hd .rule {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ══ FORM GRID ══ */
+        .form-row {
+            display: grid;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row.c2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .form-row.c3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .form-row.c1 {
+            grid-template-columns: 1fr;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.71rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-mid);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .req {
+            color: #e05252;
+        }
+
+        .tag-auto {
+            font-size: 0.57rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: var(--teal-faint);
+            color: #236464;
+            border: 1px solid var(--teal-pale);
+            border-radius: 4px;
+            padding: 2px 7px;
+        }
+
+        .label-note {
+            font-size: 0.67rem;
+            font-weight: 400;
+            letter-spacing: 0;
+            text-transform: none;
+            color: var(--text-muted);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid var(--border-mid);
+            border-radius: var(--radius-sm);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.87rem;
+            padding: 11px 14px;
+            outline: none;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        input:hover,
+        select:hover {
+            border-color: var(--teal-mid);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--teal-dark);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(29, 110, 110, 0.1);
+        }
+
+        input[readonly] {
+            background: var(--teal-faint);
+            border-color: var(--teal-pale);
+            color: var(--teal-dark);
+            font-weight: 600;
+            cursor: default;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d6e6e' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+
+        select option {
+            background: var(--white);
+            color: var(--text-dark);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        /* ══ VALIDATION ══ */
+        #val-banner {
+            display: none;
+            align-items: flex-start;
+            gap: 10px;
+            background: #fff5f5;
+            border: 1.5px solid #fca5a5;
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.8rem;
+            color: #c53030;
+        }
+
+        #val-banner.show {
+            display: flex;
+        }
+
+        .field-err {
+            font-size: 0.69rem;
+            color: #e05252;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .form-field.err input,
+        .form-field.err select {
+            border-color: #fca5a5;
+            background: #fff8f8;
+        }
+
+        .form-field.err .field-err {
+            display: block;
+        }
+
+        /* ══ CARD FOOTER ══ */
+        .card-foot {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border);
+            background: var(--parchment);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .step-counter {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .step-counter strong {
+            color: var(--teal-dark);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            padding: 11px 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: #236464bf;
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(35, 100, 100, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(35, 100, 100, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: none;
+        }
+
+        /* ══ SIDEBAR ══ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .side-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .side-card-hd {
+            background: #236464bf;
+            padding: 13px 18px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .side-card-body {
+            padding: 18px;
+        }
+
+        .check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-mid);
+        }
+
+        .check-item.done {
+            color: #236464;
+        }
+
+        .check-item .ci {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--teal-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.63rem;
+        }
+
+        .check-item.done .ci {
+            background: #236464bf;
+            color: var(--white);
+        }
+
+        .check-item.todo .ci {
+            background: var(--cream-dark);
+            color: var(--text-muted);
+        }
+
+        .hipaa-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 18px;
+            background: var(--teal-faint);
+            border: 1px solid var(--teal-pale);
+            border-radius: var(--radius);
+        }
+
+        .hipaa-icon {
+            font-size: 26px;
+        }
+
+        .hipaa-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #236464;
+        }
+
+        .hipaa-card p {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: var(--text-mid);
+        }
+
+        .tip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 8px;
+            font-size: 0.74rem;
+            line-height: 1.5;
+            color: var(--text-mid);
+        }
+
+        .tip-item::before {
+            content: '•';
+            color: #236464bf;
+            font-weight: 900;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ══ FOOTER ══ */
+        .site-footer {
+            background: #236464bf;
+            padding: 16px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .site-footer p {
+            font-size: 0.71rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-links a {
+            font-size: 0.71rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        /* ══ SCROLLBAR ══ */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--cream-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--teal-pale);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--teal-mid);
+        }
+
+        /* ══ RESPONSIVE ══ */
+        @media (max-width: 960px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 28px 24px 48px;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .side-card {
+                flex: 1 1 240px;
+            }
+
+            .progress-band {
+                padding: 0 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-body {
+                padding: 20px;
+            }
+
+            .card-topbar {
+                padding: 16px 20px;
+            }
+
+            .card-foot {
+                padding: 14px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-row.c2,
+            .form-row.c3 {
+                grid-template-columns: 1fr;
+            }
+
+            .site-footer {
+                padding: 14px 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-band {
+                padding: 0 16px;
+            }
+
+            .back-link span {
+                display: none;
+            }
+
+            .step-label {
+                display: none;
+            }
+
+            /* keep steps clean on mobile */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrap">
+
+        <!-- ══ PROGRESS BAR ══ -->
+        <nav class="progress-band" aria-label="Form progress">
+            <div class="progress-inner">
+                <a href="index.html" class="back-link"><span>Home</span></a>
+                <div class="progress-steps">
+                    <div class="step-node active">
+                        <div class="step-circle">1</div>
+                        <span class="step-label">Demographics</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">2</div>
+                        <span class="step-label">Pain Profile</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">3</div>
+                        <span class="step-label">Assessments</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">4</div>
+                        <span class="step-label">Medical History</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">5</div>
+                        <span class="step-label">Patient Goals</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ══ MAIN CONTENT ══ -->
+        <div class="main-content">
+
+            <!-- Left: Form -->
+            <div class="form-card">
+                <div class="card-topbar">
+                    <div class="topbar-icon">👤</div>
+                    <div class="topbar-text">
+                        <h2>Patient Demographics</h2>
+                        <p>Step 1 of 5 — Please provide your basic information to create your patient profile</p>
+                    </div>
+                </div>
+
+                <div class="form-body">
+
+                    <!-- Validation Banner -->
+                    <div id="val-banner" role="alert">
+                        <span>⚠️</span>
+                        <span id="val-msg">Please complete all required fields before continuing.</span>
+                    </div>
+
+                    <!-- §1 Personal Info -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">01 — Personal Information</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field" id="field-full_name">
+                                <label for="full_name">Full Name <span class="req">*</span></label>
+                                <input type="text" id="full_name" name="full_name" placeholder="e.g., Jane Smith"
+                                    required autocomplete="name">
+                                <span class="field-err">Full name is required.</span>
+                            </div>
+                            <div class="form-field" id="field-dob">
+                                <label for="dob">Date of Birth <span class="req">*</span></label>
+                                <input type="date" id="dob" name="dob" required autocomplete="bday">
+                                <span class="field-err">Date of birth is required.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row c3">
+                            <div class="form-field">
+                                <label for="age">Age <span class="tag-auto">Auto</span></label>
+                                <input type="number" id="age" name="age" readonly placeholder="—" tabindex="-1">
+                            </div>
+                            <div class="form-field" id="field-sex">
+                                <label for="sex">Sex <span class="req">*</span></label>
+                                <select id="sex" name="sex" required>
+                                    <option value="">Select…</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="non-binary">Non-Binary / Non-Conforming</option>
+                                    <option value="prefer-not">Prefer not to say</option>
+                                </select>
+                                <span class="field-err">Please select a value.</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="marital_status">Marital Status</label>
+                                <select id="marital_status" name="marital_status">
+                                    <option value="">Select…</option>
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                    <option value="divorced">Divorced</option>
+                                    <option value="widowed">Widowed</option>
+                                    <option value="separated">Separated</option>
+                                    <option value="domestic">Domestic Partnership</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- §2 Contact Info -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">02 — Contact Information</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field" id="field-email">
+                                <label for="email">Email Address <span class="req">*</span></label>
+                                <input type="email" id="email" name="email" placeholder="you@example.com" required
+                                    autocomplete="email">
+                                <span class="field-err">A valid email is required.</span>
+                            </div>
+                            <div class="form-field" id="field-phone">
+                                <label for="phone">Phone Number <span class="req">*</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required
+                                    autocomplete="tel">
+                                <span class="field-err">Phone number is required.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row c1">
+                            <div class="form-field">
+                                <label for="address">Street Address</label>
+                                <input type="text" id="address" name="address" placeholder="Street address"
+                                    autocomplete="street-address">
+                            </div>
+                        </div>
+
+                        <div class="form-row c3">
+                            <div class="form-field">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" placeholder="City"
+                                    autocomplete="address-level2">
+                            </div>
+                            <div class="form-field">
+                                <label for="state">State / Province</label>
+                                <input type="text" id="state" name="state" placeholder="State"
+                                    autocomplete="address-level1">
+                            </div>
+                            <div class="form-field">
+                                <label for="zip">ZIP / Postal Code</label>
+                                <input type="text" id="zip" name="zip" placeholder="ZIP" autocomplete="postal-code">
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="country">Country</label>
+                                <select id="country" name="country" autocomplete="country">
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="occupation">Occupation</label>
+                                <input type="text" id="occupation" name="occupation"
+                                    placeholder="e.g., Teacher, Engineer, Retired">
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="emergency_name">Emergency Contact Name</label>
+                                <input type="text" id="emergency_name" name="emergency_name" placeholder="Full name">
+                            </div>
+                            <div class="form-field">
+                                <label for="emergency_phone">Emergency Contact Phone</label>
+                                <input type="tel" id="emergency_phone" name="emergency_phone"
+                                    placeholder="(123) 456-7890">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- §3 Insurance -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">03 — Insurance Information</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="insurance">Insurance Carrier</label>
+                                <input type="text" id="insurance" name="insurance"
+                                    placeholder="e.g., Blue Cross, Aetna, Medicare">
+                            </div>
+                            <div class="form-field">
+                                <label for="ins_id">Insurance ID / Member #</label>
+                                <input type="text" id="ins_id" name="ins_id" placeholder="Member ID">
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="ins_group">Group Number</label>
+                                <input type="text" id="ins_group" name="ins_group" placeholder="Group #">
+                            </div>
+                            <div class="form-field">
+                                <label for="ins_phone">Insurance Phone</label>
+                                <input type="tel" id="ins_phone" name="ins_phone" placeholder="(800) 000-0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- §4 Care Team -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">04 — Care Team</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="pcp_name">Primary Care Physician</label>
+                                <input type="text" id="pcp_name" name="pcp_name" placeholder="Dr. Full Name">
+                            </div>
+                            <div class="form-field">
+                                <label for="pcp_phone">PCP Phone</label>
+                                <input type="tel" id="pcp_phone" name="pcp_phone" placeholder="(123) 456-7890">
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="pcp_address">PCP Office Address</label>
+                                <input type="text" id="pcp_address" name="pcp_address" placeholder="Office Address">
+                            </div>
+                            <div class="form-field">
+                                <label for="referring">Referring Provider <span class="label-note">(if
+                                        applicable)</span></label>
+                                <input type="text" id="referring" name="referring" placeholder="Dr. Full Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- §5 Physical Measurements -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">05 — Physical Measurements</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="height">Height</label>
+                                <input type="text" id="height" name="height" placeholder="e.g., 5'10&quot; or 178 cm">
+                            </div>
+                            <div class="form-field">
+                                <label for="weight">Weight (lbs)</label>
+                                <input type="number" id="weight" name="weight" placeholder="lbs" step="0.1" min="1">
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field">
+                                <label for="bmi">BMI <span class="tag-auto">Auto-Calculated</span></label>
+                                <input type="text" id="bmi" name="bmi" readonly placeholder="—" tabindex="-1">
+                            </div>
+                            <div class="form-field">
+                                <label for="bmi_cat">BMI Category <span class="tag-auto">Auto</span></label>
+                                <input type="text" id="bmi_cat" name="bmi_cat" readonly placeholder="—" tabindex="-1">
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /form-body -->
+
+                <!-- Card foot -->
+                <div class="card-foot">
+                    <div class="step-counter">Step <strong>1</strong> of <strong>5</strong> — Demographics</div>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="validateAndContinue()">Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <aside class="sidebar">
+
+                <!-- Checklist -->
+                <div class="side-card">
+                    <div class="side-card-hd">📋 This Section Covers</div>
+                    <div class="side-card-body">
+                        <div class="check-list">
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Personal Information
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Contact Details
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Insurance Info
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Care Team
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Physical Measurements
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">2</div> Pain Profile (next)
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">3</div> Assessments (next)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HIPAA Card -->
+                <div class="hipaa-card">
+                    <div class="hipaa-icon">🔒</div>
+                    <h4>HIPAA Protected</h4>
+                    <p>All information is fully confidential and encrypted. Only authorised members of your care team
+                        will have access.</p>
+                </div>
+
+                <!-- Tips -->
+                <div class="side-card">
+                    <div class="side-card-hd">💡 Helpful Tips</div>
+                    <div class="side-card-body">
+                        <div class="tip-list">
+                            <div class="tip-item">Age and BMI are calculated automatically — no guessing needed.</div>
+                            <div class="tip-item">Only fields marked <strong style="color:#e05252">*</strong> are
+                                required.</div>
+                            <div class="tip-item">Your progress is saved automatically as you type.</div>
+                            <div class="tip-item">Insurance info can be found on the back of your insurance card.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div><!-- /main-content -->
+
+        <!-- ══ FOOTER ══ -->
+        <footer class="site-footer">
+            <p>© 2025 Aviraj Soin AI Spinal Intake — All rights reserved</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">HIPAA Notice</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+
+    </div><!-- /page-wrap -->
+
+    <script>
+        /* ── Auto-age from DOB ─────────────────────────────── */
+        document.getElementById('dob').addEventListener('change', function () {
+            const dob = new Date(this.value);
+            if (isNaN(dob)) return;
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+            document.getElementById('age').value = age >= 0 ? age : '';
+        });
+
+        /* ── Parse height helper ──────────────────────────── */
+        function parseHeightToInches(val) {
+            if (!val) return 0;
+            val = val.trim().toLowerCase();
+            let m = val.match(/^(\d+)\s*[''′]\s*(\d+)?\s*["″]?$/);
+            if (m) return parseInt(m[1]) * 12 + (parseInt(m[2]) || 0);
+            m = val.match(/^([\d.]+)\s*cm$/);
+            if (m) return parseFloat(m[1]) / 2.54;
+            m = val.match(/^([\d.]+)$/);
+            if (m) {
+                const n = parseFloat(m[1]);
+                return n < 20 ? n * 12 : n / 2.54;
+            }
+            return 0;
+        }
+
+        /* ── Auto-BMI ──────────────────────────────────────── */
+        function calcBMI() {
+            const totalIn = parseHeightToInches(document.getElementById('height').value);
+            const wt = parseFloat(document.getElementById('weight').value) || 0;
+            if (totalIn <= 0 || wt <= 0) {
+                document.getElementById('bmi').value = '';
+                document.getElementById('bmi_cat').value = '';
+                return;
+            }
+            const bmi = (wt / (totalIn * totalIn)) * 703;
+            document.getElementById('bmi').value = bmi.toFixed(1);
+            const cat =
+                bmi < 18.5 ? 'Underweight' :
+                    bmi < 25 ? 'Normal weight' :
+                        bmi < 30 ? 'Overweight' :
+                            bmi < 35 ? 'Obese Class I' :
+                                bmi < 40 ? 'Obese Class II' : 'Obese Class III';
+            document.getElementById('bmi_cat').value = cat;
+        }
+        ['height', 'weight'].forEach(id =>
+            document.getElementById(id).addEventListener('input', calcBMI));
+
+        /* ── Phone formatter ──────────────────────────────── */
+        function fmtPhone(el) {
+            let v = el.value.replace(/\D/g, '').slice(0, 10);
+            if (v.length >= 7) v = '(' + v.slice(0, 3) + ') ' + v.slice(3, 6) + '-' + v.slice(6);
+            else if (v.length >= 4) v = '(' + v.slice(0, 3) + ') ' + v.slice(3);
+            else if (v.length > 0) v = '(' + v;
+            el.value = v;
+        }
+        ['phone', 'pcp_phone', 'ins_phone', 'emergency_phone'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => fmtPhone(el));
+        });
+
+        /* ── Validation ──────────────────────────────────── */
+        const required = [
+            { id: 'full_name', label: 'Full Name' },
+            { id: 'dob', label: 'Date of Birth' },
+            { id: 'sex', label: 'Sex' },
+            { id: 'email', label: 'Email Address' },
+            { id: 'phone', label: 'Phone Number' }
+        ];
+
+        function clearErrors() {
+            required.forEach(f => {
+                const w = document.getElementById('field-' + f.id);
+                if (w) w.classList.remove('err');
+            });
+            document.getElementById('val-banner').classList.remove('show');
+        }
+
+        function validateAndContinue() {
+            clearErrors();
+            const errs = [];
+            required.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (!el) return;
+                if (!el.value.trim()) {
+                    errs.push(f.label);
+                    const w = document.getElementById('field-' + f.id);
+                    if (w) w.classList.add('err');
+                }
+            });
+            const emailEl = document.getElementById('email');
+            if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+                errs.push('Valid Email');
+                const w = document.getElementById('field-email');
+                if (w) w.classList.add('err');
+            }
+            if (errs.length) {
+                const banner = document.getElementById('val-banner');
+                document.getElementById('val-msg').textContent = 'Please complete: ' + errs.join(', ') + '.';
+                banner.classList.add('show');
+                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                return;
+            }
+            toast('✅ Demographics saved! Pain Profile coming next.');
+        }
+
+        /* ── Auto draft save / load ──────────────────────── */
+        let _draftTimer = null;
+        function saveDraft() {
+            const data = {};
+            document.querySelectorAll('input:not([readonly]), select').forEach(el => {
+                if (el.id) data[el.id] = el.value;
+            });
+            try {
+                localStorage.setItem('spinal_demo_draft', JSON.stringify(data));
+            } catch (e) { /* silent */ }
+        }
+
+        function scheduleDraftSave() {
+            clearTimeout(_draftTimer);
+            _draftTimer = setTimeout(saveDraft, 800);
+        }
+
+        document.querySelectorAll('input:not([readonly]), select').forEach(el => {
+            el.addEventListener('input', scheduleDraftSave);
+            el.addEventListener('change', scheduleDraftSave);
+        });
+
+        function loadDraft() {
+            try {
+                const saved = localStorage.getItem('spinal_demo_draft');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+                Object.entries(data).forEach(([id, val]) => {
+                    const el = document.getElementById(id);
+                    if (el && !el.readOnly) el.value = val;
+                });
+                document.getElementById('dob').dispatchEvent(new Event('change'));
+                calcBMI();
+            } catch (e) { }
+        }
+
+        /* ── Toast ──────────────────────────────────────── */
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            Object.assign(t.style, {
+                position: 'fixed', bottom: '28px', right: '28px',
+                background: '#236464bf',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                color: '#fff', padding: '12px 22px', borderRadius: '50px',
+                fontSize: '0.83rem', fontWeight: '600',
+                boxShadow: '0 6px 24px rgba(35,100,100,0.3)',
+                zIndex: '9999', opacity: '0',
+                transform: 'translateY(12px)',
+                transition: 'all 0.3s ease',
+                fontFamily: 'Inter, sans-serif'
+            });
+            document.body.appendChild(t);
+            requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+            setTimeout(() => {
+                t.style.opacity = '0'; t.style.transform = 'translateY(12px)';
+                setTimeout(() => t.remove(), 350);
+            }, 2800);
+        }
+
+        loadDraft();
+
+
+
+
+
+
+
+        /* ── FORM SUBMISSION TO GOOGLE SHEETS ────────────────────────────── */
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwOJd8SRyIiZg4mw4mg3kjaYPJxdF7uo5gcbLyx93bhgvCeQudzz0BAcxfUWR_qYKbe/exec';
+
+        /* ── Collect form data ───────────────────────────────────────────── */
+        function collectFormData() {
+            // Get all visible input/select/textarea values from the form
+            const data = {};
+
+            // All fields on the page
+            const fields = [
+                'full_name', 'dob', 'age', 'sex', 'marital_status',
+                'email', 'phone', 'address', 'city', 'state', 'zip',
+                'country', 'occupation',
+                'emergency_name', 'emergency_phone',
+                'insurance', 'ins_id', 'ins_group', 'ins_phone',
+                'pcp_name', 'pcp_phone', 'pcp_address', 'referring',
+                'height', 'weight', 'bmi', 'bmi_cat'
+            ];
+
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) data[id] = el.value;
+            });
+
+            return data;
+        }
+
+        /* ── Submit to Google Sheets ────────────────────────────────────── */
+        async function submitToSheets(formData) {
+            try {
+                const response = await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Avoid CORS issues
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                return { success: true };
+            } catch (error) {
+                console.error('Submit error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        /* ── Modified validateAndContinue function ──────────────────────── */
+        // Replace the existing validateAndContinue with this version
+        function validateAndContinue() {
+            clearErrors();
+            const errs = [];
+            required.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (!el) return;
+                if (!el.value.trim()) {
+                    errs.push(f.label);
+                    const w = document.getElementById('field-' + f.id);
+                    if (w) w.classList.add('err');
+                }
+            });
+            const emailEl = document.getElementById('email');
+            if (emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+                errs.push('Valid Email');
+                const w = document.getElementById('field-email');
+                if (w) w.classList.add('err');
+            }
+            if (errs.length) {
+                const banner = document.getElementById('val-banner');
+                document.getElementById('val-msg').textContent = 'Please complete: ' + errs.join(', ') + '.';
+                banner.classList.add('show');
+                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                return;
+            }
+
+            // ── NEW: Save to Google Sheets ──
+            const formData = collectFormData();
+            formData.form_status = 'Demographics Completed';
+
+            // Show saving state
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            submitToSheets(formData).then(result => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+
+                if (result.success) {
+                    // Clear draft after successful save
+                    localStorage.removeItem('spinal_demo_draft');
+                    toast('✅ Demographics saved successfully! Moving to Pain Profile...');
+
+                    // Optional: redirect to next step after 1.5 seconds
+                    setTimeout(() => {
+                        // window.location.href = 'pain-profile.html'; // Uncomment when you have next page
+                    }, 1500);
+                } else {
+                    toast('❌ Error saving. Please check your connection and try again.');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
