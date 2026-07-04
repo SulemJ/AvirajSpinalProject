@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical History – Aviraj Soin AI Spinal Intake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="intake.css">
+
+    <style>
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--teal-dark);
+        }
+
+        .history-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px dashed var(--border-mid);
+        }
+
+        .history-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .upload-box {
+            border: 2px dashed var(--teal-light);
+            background: var(--teal-faint);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 12px;
+        }
+
+        .upload-box:hover {
+            background: rgba(77, 189, 189, 0.15);
+            border-color: var(--teal-mid);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--teal-mid);
+        }
+
+        .upload-text {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .upload-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <nav class="progress-band" aria-label="Form progress">
+            <div class="progress-inner">
+                <a href="assessments.html" class="back-link"><span>Back</span></a>
+                <div class="progress-steps">
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Demographics</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Pain Profile</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Assessments</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node active">
+                        <div class="step-circle">4</div><span class="step-label">Medical History</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">5</div><span class="step-label">Patient Goals</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="form-card">
+                <div class="card-topbar">
+                    <div class="topbar-icon">⚕️</div>
+                    <div class="topbar-text">
+                        <h2>Medical History</h2>
+                        <p>Step 4 of 5 — Comprehensive review of your prior treatments and history</p>
+                    </div>
+                </div>
+
+                <div class="form-body">
+
+                    <div id="val-banner" role="alert">
+                        <span>⚠️</span><span id="val-msg">Please complete all required fields.</span>
+                    </div>
+
+                    <!-- Prior Treatments -->
+                    <div class="history-section">
+                        <div class="subsection">
+                            <div class="subsection-hd">
+                                <span class="tag">01 — Prior Treatments</span>
+                                <div class="rule"></div>
+                            </div>
+                            <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom: 16px;">What treatments
+                                have you already tried for your current pain condition?</p>
+
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label"><input type="checkbox" name="pt_meds" id="pt_meds">
+                                    Medications (NSAIDs/Opioids)</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_therapy" id="pt_therapy">
+                                    Physical Therapy</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_chiro" id="pt_chiro">
+                                    Chiropractor</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_inject" id="pt_inject">
+                                    Epidural / Injections</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_accu" id="pt_accu">
+                                    Acupuncture</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_massage" id="pt_massage">
+                                    Massage Therapy</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_home" id="pt_home"> Home
+                                    Exercise / Stretching</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pt_surgery" id="pt_surgery">
+                                    Prior Spine Surgery</label>
+                            </div>
+
+                            <div class="form-field" style="margin-top: 16px;">
+                                <label for="tx_details">Please describe how well any of these worked:</label>
+                                <textarea id="tx_details"
+                                    placeholder="e.g. Physical therapy helped for a few months, injections did not work..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Surgical History -->
+                    <div class="history-section">
+                        <div class="subsection">
+                            <div class="subsection-hd">
+                                <span class="tag">02 — Surgical History</span>
+                                <div class="rule"></div>
+                            </div>
+                            <div class="form-row c1">
+                                <div class="form-field">
+                                    <label for="surgeries">List all past surgeries (Spine and other) including
+                                        dates:</label>
+                                    <textarea id="surgeries" rows="3"
+                                        placeholder="e.g. 2018 - L4-L5 Microdiscectomy, 2010 - Appendectomy"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical & Family History -->
+                    <div class="history-section">
+                        <div class="subsection">
+                            <div class="subsection-hd">
+                                <span class="tag">03 — Other Medical & Family History</span>
+                                <div class="rule"></div>
+                            </div>
+                            <div class="form-row c2">
+                                <div class="form-field">
+                                    <label for="medical_conditions">Current Medical Conditions (e.g. Diabetes,
+                                        Hypertension)</label>
+                                    <textarea id="medical_conditions" rows="3"
+                                        placeholder="List any chronic conditions..."></textarea>
+                                </div>
+                                <div class="form-field">
+                                    <label for="psych_history">Psychological History (e.g. Anxiety, Depression)</label>
+                                    <textarea id="psych_history" rows="3"
+                                        placeholder="Any history of depression, anxiety, PTSD, etc."></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row c1" style="margin-top: 16px;">
+                                <div class="form-field">
+                                    <label for="family_history">Family History</label>
+                                    <textarea id="family_history" rows="2"
+                                        placeholder="Any family history of severe back pain, arthritis, or neurological disorders?"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Imaging History -->
+                    <div class="history-section">
+                        <div class="subsection">
+                            <div class="subsection-hd">
+                                <span class="tag">04 — Imaging History (MRI, X-Ray, CT, EMG)</span>
+                                <div class="rule"></div>
+                            </div>
+                            <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom: 16px;">Have you had any
+                                recent imaging done for your condition? Please note the dates and facility.</p>
+                            <div class="form-row c1">
+                                <div class="form-field">
+                                    <textarea id="imaging_details" rows="2"
+                                        placeholder="e.g. MRI of Lumbar Spine at XYZ Imaging Center in Jan 2024"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="upload-box" onclick="document.getElementById('fileUpload').click()">
+                                <div class="upload-icon">📁</div>
+                                <div class="upload-text">Click to upload imaging reports or records</div>
+                                <div class="upload-sub">Supports PDF, JPG, PNG (Max 10MB)</div>
+                                <input type="file" id="fileUpload" style="display: none;" multiple
+                                    accept=".pdf,.jpg,.jpeg,.png">
+                            </div>
+                            <div id="file-list"
+                                style="margin-top: 12px; font-size: 0.8rem; font-weight: 500; color: var(--teal-dark);">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-foot">
+                    <div class="step-counter">Step <strong>4</strong> of <strong>5</strong> — Medical History</div>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="validateAndContinue()">Continue to
+                            Goals</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="side-card">
+                    <div class="side-card-hd">📋 Progress</div>
+                    <div class="side-card-body">
+                        <div class="check-list">
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Demographics
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Pain Profile
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Assessments
+                            </div>
+                            <div class="check-item todo" style="color: #236464;">
+                                <div class="ci" style="background:#236464bf; color:#fff;">4</div> Medical History
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">5</div> Patient Goals (next)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-card">
+                    <div class="side-card-hd">💡 Why is this needed?</div>
+                    <div class="side-card-body">
+                        <div class="tip-list">
+                            <div class="tip-item">Knowing what treatments failed helps us build a better new plan.</div>
+                            <div class="tip-item">Family history gives us clues about genetic predispositions.</div>
+                            <div class="tip-item">Uploading your MRI results directly speeds up your consultation.</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="site-footer">
+            <p>© 2025 Aviraj Soin AI Spinal Intake — All rights reserved</p>
+        </footer>
+    </div>
+
+    <script>
+
+        // Base64 File Upload Handlers
+        let uploadedFilesBase64 = [];
+
+        document.getElementById('fileUpload').addEventListener('change', async function (e) {
+            const list = document.getElementById('file-list');
+            list.innerHTML = '<div style="color:var(--teal-dark)">Processing files...</div>';
+
+            let html = '';
+            // Reset base64 arrays to current (simplistic model replaces old selections on re-select)
+            uploadedFilesBase64 = [];
+
+            for (let file of this.files) {
+                try {
+                    const b64 = await readFileAsBase64(file);
+                    uploadedFilesBase64.push({ name: file.name, type: file.type, data: b64 });
+
+                    if (file.type.startsWith('image/')) {
+                        html += `<div style="display:inline-block; margin-right:8px; text-align:center;">
+                                    <img src="${b64}" style="max-width:80px; max-height:80px; border-radius:var(--radius-sm); margin-top:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border:1px solid var(--border-mid)">
+                                    <div style="font-size:0.7rem; max-width:80px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:6px;">${file.name}</div>
+                                 </div>`;
+                    } else {
+                        html += `<div style="margin-top:8px;">📄 ${file.name} (Ready)</div>`;
+                    }
+                } catch (err) {
+                    html += `<div style="color:red;">❌ Error loading ${file.name}</div>`;
+                }
+            }
+            list.innerHTML = html;
+            saveDraft();
+        });
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    if (file.type.startsWith('image/') && reader.result.length > 800000) {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 1000;
+                            let scaleSize = 1;
+                            if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = img.width * scaleSize;
+                            canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        }
+                        img.onerror = () => resolve(reader.result);
+                        img.src = reader.result;
+                    } else {
+                        resolve(reader.result);
+                    }
+                };
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /* ── LocalStorage Draft ──────────────────────────────────────── */
+        function saveDraft() {
+            const data = JSON.parse(localStorage.getItem('spinal_medical_draft') || '{}');
+            document.querySelectorAll('input[type="checkbox"], textarea').forEach(el => {
+                if (el.type === 'checkbox') {
+                    data[el.id] = el.checked;
+                } else if (el.id) {
+                    data[el.id] = el.value;
+                }
+            });
+            // Store attachments
+            data._attachments = uploadedFilesBase64;
+            localStorage.setItem('spinal_medical_draft', JSON.stringify(data));
+        }
+
+        function loadDraft() {
+            const saved = localStorage.getItem('spinal_medical_draft');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.entries(data).forEach(([key, val]) => {
+                    if (key === '_attachments') {
+                        uploadedFilesBase64 = val || [];
+                        const list = document.getElementById('file-list');
+                        let html = '';
+                        uploadedFilesBase64.forEach(f => {
+                            if (f.type && f.type.startsWith('image/')) {
+                                html += `<div style="display:inline-block; margin-right:8px; text-align:center;">
+                                            <img src="${f.data}" style="max-width:80px; max-height:80px; border-radius:var(--radius-sm); margin-top:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border:1px solid var(--border-mid)">
+                                            <div style="font-size:0.7rem; max-width:80px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:6px;">${f.name}</div>
+                                         </div>`;
+                            } else {
+                                html += `<div style="margin-top:8px;">📄 ${f.name} (Ready)</div>`;
+                            }
+                        });
+                        list.innerHTML = html;
+                    } else {
+                        const el = document.getElementById(key);
+                        if (el) {
+                            if (el.type === 'checkbox') el.checked = val;
+                            else el.value = val;
+                        }
+                    }
+                });
+            }
+        }
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', saveDraft);
+            el.addEventListener('change', saveDraft);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadDraft);
+
+        function validateAndContinue() {
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            btn.textContent = 'Continuing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                window.location.href = 'goals.html';
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

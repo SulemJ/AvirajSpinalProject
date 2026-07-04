@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pain Profile – Aviraj Soin AI Spinal Intake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="intake.css">
+    <style>
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            border: 2px solid var(--border-mid);
+            border-radius: var(--radius-sm);
+            background: #fff;
+            overflow: hidden;
+            touch-action: none;
+            /* Prevent scrolling while drawing on mobile */
+        }
+
+        .canvas-bg {
+            display: block;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #painCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            z-index: 10;
+        }
+
+        .canvas-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .canvas-instr {
+            font-size: 0.8rem;
+            color: var(--text-mid);
+            font-weight: 500;
+        }
+
+        .btn-clear {
+            background: rgba(224, 82, 82, 0.1);
+            color: #d14343;
+            border: 1px solid rgba(224, 82, 82, 0.2);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-clear:hover {
+            background: rgba(224, 82, 82, 0.2);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 500;
+        }
+
+        .checkbox-label input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--teal-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrap">
+
+        <!-- ══ PROGRESS BAR ══ -->
+        <nav class="progress-band" aria-label="Form progress">
+            <div class="progress-inner">
+                <a href="form.html" class="back-link"><span>Back</span></a>
+                <div class="progress-steps">
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div>
+                        <span class="step-label">Demographics</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node active">
+                        <div class="step-circle">2</div>
+                        <span class="step-label">Pain Profile</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">3</div>
+                        <span class="step-label">Assessments</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">4</div>
+                        <span class="step-label">Medical History</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">5</div>
+                        <span class="step-label">Patient Goals</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ══ MAIN CONTENT ══ -->
+        <div class="main-content">
+
+            <!-- Left: Form -->
+            <div class="form-card">
+                <div class="card-topbar">
+                    <div class="topbar-icon">⚡</div>
+                    <div class="topbar-text">
+                        <h2>Pain Profile</h2>
+                        <p>Step 2 of 5 — Help us understand the location and nature of your pain</p>
+                    </div>
+                </div>
+
+                <div class="form-body">
+
+                    <div id="val-banner" role="alert">
+                        <span>⚠️</span>
+                        <span id="val-msg">Please complete all required fields before continuing.</span>
+                    </div>
+
+                    <!-- §1 Pain Diagram -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">01 — Interactive Pain Diagram</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="canvas-tools">
+                            <span class="canvas-instr">Use your mouse or finger to draw where you feel pain.</span>
+                            <button type="button" class="btn-clear" onclick="clearCanvas()">Clear Drawing</button>
+                        </div>
+
+                        <div class="canvas-container">
+                            <!-- Make sure the image uses the exact one we placed -->
+                            <img src="human_body_pain_diagram.png" class="canvas-bg" id="diagramBg"
+                                alt="Human Body Pain Diagram">
+                            <canvas id="painCanvas"></canvas>
+                        </div>
+                        <input type="hidden" id="pain_diagram_base64" name="pain_diagram_base64">
+                    </div>
+
+                    <!-- §2 Pain Description -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">02 — Pain Details</span>
+                            <div class="rule"></div>
+                        </div>
+
+                        <div class="form-row c1">
+                            <div class="form-field" id="field-pain_location">
+                                <label for="pain_location">Describe the location of your pain <span
+                                        class="req">*</span></label>
+                                <textarea id="pain_location" name="pain_location" rows="2"
+                                    placeholder="e.g., Lower back shooting down my left leg" required></textarea>
+                                <span class="field-err">Description is required.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row c2">
+                            <div class="form-field" id="field-pain_duration">
+                                <label for="pain_duration">How long ago did it start? <span class="req">*</span></label>
+                                <input type="text" id="pain_duration" name="pain_duration"
+                                    placeholder="e.g., 3 weeks ago, 5 years ago" required>
+                                <span class="field-err">Duration is required.</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="pain_injury">Was there an injury or accident?</label>
+                                <select id="pain_injury" name="pain_injury">
+                                    <option value="">Select...</option>
+                                    <option value="No">No specific injury</option>
+                                    <option value="Car Accident">Car Accident</option>
+                                    <option value="Work Injury">Work Injury</option>
+                                    <option value="Sports Injury">Sports Injury</option>
+                                    <option value="Fall">Fall</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row c1" style="margin-top: 24px;">
+                            <label>What makes the pain worse? <span class="label-note">(check all that
+                                    apply)</span></label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Standing">
+                                    Standing</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Sitting">
+                                    Sitting</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Walking">
+                                    Walking</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Bending">
+                                    Bending</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Stooping">
+                                    Stooping</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Lifting">
+                                    Lifting</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_worse" value="Twisting">
+                                    Twisting</label>
+                            </div>
+                        </div>
+
+                        <div class="form-row c1" style="margin-top: 24px;">
+                            <label>What makes the pain better? <span class="label-note">(check all that
+                                    apply)</span></label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better" value="Rest">
+                                    Rest</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better" value="Ice">
+                                    Ice</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better" value="Heat">
+                                    Heat</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better"
+                                        value="Laying Down"> Laying Down</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better"
+                                        value="Medication"> Medication</label>
+                                <label class="checkbox-label"><input type="checkbox" name="pain_better"
+                                        value="Stretching"> Stretching</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div><!-- /form-body -->
+
+                <!-- Card foot -->
+                <div class="card-foot">
+                    <div class="step-counter">Step <strong>2</strong> of <strong>5</strong> — Pain Profile</div>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="validateAndContinue()">Continue to
+                            Assessments
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <aside class="sidebar">
+                <div class="side-card">
+                    <div class="side-card-hd">📋 Progress</div>
+                    <div class="side-card-body">
+                        <div class="check-list">
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Demographics
+                            </div>
+                            <div class="check-item todo" style="color: #236464;">
+                                <div class="ci" style="background:#236464bf; color:#fff;">2</div> Pain Profile
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">3</div> Assessments (next)
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">4</div> Medical History
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">5</div> Patient Goals
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-card">
+                    <div class="side-card-hd">💡 Diagram Tips</div>
+                    <div class="side-card-body">
+                        <div class="tip-list">
+                            <div class="tip-item">Draw lines or shade the exact regions where you feel pain.</div>
+                            <div class="tip-item">Your drawing is converted into a secure image attachment for your care
+                                team.</div>
+                            <div class="tip-item">If you make a mistake, simply use the "Clear Drawing" button.</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div><!-- /main-content -->
+
+        <footer class="site-footer">
+            <p>© 2025 Aviraj Soin AI Spinal Intake — All rights reserved</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">HIPAA Notice</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+
+    </div><!-- /page-wrap -->
+
+    <script>
+        /* ── Canvas Logic ───────────────────────────────── */
+        const canvas = document.getElementById('painCanvas');
+        const ctx = canvas.getContext('2d');
+        const bgImg = document.getElementById('diagramBg');
+        let isDrawing = false;
+
+        // Ensure canvas dimensions match visually rendered dimensions
+        function resizeCanvas() {
+            // Give it a tiny delay to ensure bg image is rendered fully First load
+            setTimeout(() => {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+
+                // Restoring drawing if resized? (Ideally we'd redraw, but let's just restore localstorage immediately)
+                loadDraft();
+            }, 50);
+        }
+
+        window.addEventListener('resize', () => {
+            // Optional: Debounce resize to preserve drawing, but simplest is skip resizing dynamic canvas unless empty.
+        });
+
+        // Wait for image to load to set initial sizes correctly
+        bgImg.onload = resizeCanvas;
+        if (bgImg.complete) resizeCanvas();
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getMousePos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+
+            // Draw a dot just for clicking
+            ctx.fillStyle = 'rgba(220, 53, 69, 0.4)';
+            ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getMousePos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = 'rgba(220, 53, 69, 0.6)'; // Red/Pink semi-transparent for pain
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+
+        function stopDrawing(e) {
+            if (isDrawing) {
+                e.preventDefault();
+                isDrawing = false;
+                ctx.closePath();
+                scheduleDraftSave();
+            }
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        window.addEventListener('touchend', stopDrawing);
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            scheduleDraftSave();
+        }
+
+        // Helper to bake canvas with white background + background image + drawn strokes
+        function generateCompositeImage() {
+            // We create a temporary canvas to composite bg image + drawing so the exported base64 contains the body
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tCtx = tempCanvas.getContext('2d');
+
+            // Draw white background
+            tCtx.fillStyle = '#ffffff';
+            tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+            // Draw original background image
+            if (bgImg.complete) {
+                tCtx.drawImage(bgImg, 0, 0, tempCanvas.width, tempCanvas.height);
+            }
+
+            // Draw what the user drew
+            tCtx.drawImage(canvas, 0, 0);
+
+            // Return very compressed JPEG to keep Google Sheets payload under limits
+            try {
+                return tempCanvas.toDataURL('image/jpeg', 0.4);
+            } catch (e) {
+                console.warn("Local CORS prevented saving canvas", e);
+                return "";
+            }
+        }
+
+        /* ── Auto draft save / load ──────────────────────── */
+        let _draftTimer = null;
+        function saveDraft() {
+            const data = {};
+
+            // Text inputs & textareas
+            document.querySelectorAll('input[type="text"], input[type="hidden"], textarea, select').forEach(el => {
+                if (el.id) data[el.id] = el.value;
+            });
+
+            // Checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                data[el.name + '-' + el.value] = el.checked;
+            });
+
+            // Canvas drawing (just save the drawn stroke layer as PNG for restoring onto screen)
+            try {
+                // If it's totally empty, handle that gracefully
+                try {
+                    data['_canvasStrokes'] = canvas.toDataURL('image/png');
+                } catch (e) { /* ignore strict CORS */ }
+
+                localStorage.setItem('spinal_pain_draft', JSON.stringify(data));
+            } catch (e) { console.warn('Storage quota filled'); }
+        }
+
+        function scheduleDraftSave() {
+            clearTimeout(_draftTimer);
+            _draftTimer = setTimeout(saveDraft, 800);
+        }
+
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', scheduleDraftSave);
+            el.addEventListener('change', scheduleDraftSave);
+        });
+
+        function loadDraft() {
+            try {
+                const saved = localStorage.getItem('spinal_pain_draft');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+
+                Object.entries(data).forEach(([key, val]) => {
+                    if (key === '_canvasStrokes' && val) {
+                        const img = new Image();
+                        img.onload = () => ctx.drawImage(img, 0, 0);
+                        img.src = val;
+                    } else if (key.includes('-')) {
+                        // Checkbox restoring
+                        const el = document.querySelector(`input[name="${key.split('-')[0]}"][value="${key.split('-')[1]}"]`);
+                        if (el && typeof val === 'boolean') el.checked = val;
+                    } else {
+                        const el = document.getElementById(key);
+                        if (el) el.value = val;
+                    }
+                });
+            } catch (e) { }
+        }
+
+        /* ── Toast ──────────────────────────────────────── */
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            Object.assign(t.style, {
+                position: 'fixed', bottom: '28px', right: '28px',
+                background: '#236464bf', backdropFilter: 'blur(8px)',
+                color: '#fff', padding: '12px 22px', borderRadius: '50px',
+                fontSize: '0.83rem', fontWeight: '600',
+                boxShadow: '0 6px 24px rgba(35,100,100,0.3)',
+                zIndex: '9999', opacity: '0', transform: 'translateY(12px)',
+                transition: 'all 0.3s ease', fontFamily: 'Inter, sans-serif'
+            });
+            document.body.appendChild(t);
+            requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+            setTimeout(() => {
+                t.style.opacity = '0'; t.style.transform = 'translateY(12px)';
+                setTimeout(() => t.remove(), 350);
+            }, 2800);
+        }
+
+        /* ── Validation ──────────────────────────────────── */
+        const required = [
+            { id: 'pain_location', label: 'Pain Location' },
+            { id: 'pain_duration', label: 'Pain Duration' }
+        ];
+
+        function clearErrors() {
+            required.forEach(f => {
+                const w = document.getElementById('field-' + f.id);
+                if (w) w.classList.remove('err');
+            });
+            document.getElementById('val-banner').classList.remove('show');
+        }
+
+
+        function validateAndContinue() {
+            clearErrors();
+            const errs = [];
+            required.forEach(f => {
+                const el = document.getElementById(f.id);
+                if (!el) return;
+                if (!el.value.trim()) {
+                    errs.push(f.label);
+                    const w = document.getElementById('field-' + f.id);
+                    if (w) w.classList.add('err');
+                }
+            });
+
+            if (errs.length) {
+                const banner = document.getElementById('val-banner');
+                document.getElementById('val-msg').textContent = 'Please complete: ' + errs.join(', ') + '.';
+                banner.classList.add('show');
+                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                return;
+            }
+
+            // --- SAVE PAIN DIAGRAM AS IMAGE ---
+            const base64Image = generateCompositeImage();
+            console.log('📸 Pain diagram generated, length:', base64Image ? base64Image.length : 0);
+
+            // 1. Save to hidden input (for immediate use)
+            const hiddenInput = document.getElementById('pain_diagram_base64');
+            if (hiddenInput) {
+                hiddenInput.value = base64Image;
+                console.log('✅ Saved to hidden input');
+            }
+
+            // 2. Save to localStorage (for final submission)
+            const painData = JSON.parse(localStorage.getItem('spinal_pain_draft') || '{}');
+            painData.pain_diagram_base64 = base64Image;
+            painData.has_pain_diagram = base64Image ? true : false;
+            localStorage.setItem('spinal_pain_draft', JSON.stringify(painData));
+            console.log('✅ Saved to localStorage, has_pain_diagram:', painData.has_pain_diagram);
+
+            // Save state one last time
+            saveDraft();
+
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            btn.textContent = 'Continuing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                toast('✅ Pain Profile saved! Moving to Assessments...');
+                window.location.href = 'assessments.html';
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

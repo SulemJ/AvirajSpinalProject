@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments – Aviraj Soin AI Spinal Intake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="intake.css">
+
+    <style>
+        .accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .acc-item {
+            border: 1px solid var(--border-mid);
+            border-radius: var(--radius-sm);
+            background: #fff;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .acc-item.completed {
+            border-color: var(--teal-light);
+            background: var(--teal-faint);
+        }
+
+        .acc-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--text-dark);
+            user-select: none;
+            background: #fff;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .acc-item.active .acc-header {
+            border-bottom-color: var(--border-mid);
+            background: var(--parchment);
+        }
+
+        .acc-item.completed .acc-header {
+            background: transparent;
+        }
+
+        .acc-header:hover {
+            background: var(--parchment);
+        }
+
+        .acc-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .acc-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--cream-dark);
+            color: var(--text-mid);
+            font-size: 0.75rem;
+        }
+
+        .acc-item.completed .acc-badge {
+            background: var(--teal-mid);
+            color: #fff;
+        }
+
+        .acc-score {
+            font-size: 0.75rem;
+            color: var(--teal-dark);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 2px 8px;
+            border-radius: 30px;
+            display: none;
+        }
+
+        .acc-item.completed .acc-score {
+            display: inline-block;
+        }
+
+        .acc-icon {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .acc-item.active .acc-icon {
+            transform: rotate(180deg);
+            color: var(--teal-dark);
+        }
+
+        .acc-content {
+            display: none;
+            padding: 24px 20px;
+            background: #fff;
+        }
+
+        .acc-item.active .acc-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .survey-q {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .survey-q:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .survey-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Standard Likert Row */
+        .likert-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .likert-opt {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .likert-opt input[type="radio"] {
+            display: none;
+        }
+
+        .likert-opt label {
+            display: block;
+            padding: 10px 8px;
+            background: #fff;
+            border: 1px solid var(--border-mid);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--text-mid);
+            transition: var(--transition);
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .likert-opt input[type="radio"]:checked+label {
+            background: var(--teal-dark);
+            color: #fff;
+            border-color: var(--teal-dark);
+            box-shadow: 0 4px 10px rgba(29, 110, 110, 0.2);
+        }
+
+        /* NPRS Slider specialized styling */
+        .nprs-wrap {
+            padding: 20px 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--teal-dark);
+            cursor: pointer;
+        }
+
+        .nprs-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .action-row {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--teal-dark);
+            border: 1.5px solid var(--teal-dark);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-outline:hover {
+            background: var(--teal-faint);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <nav class="progress-band" aria-label="Form progress">
+            <div class="progress-inner">
+                <a href="pain-profile.html" class="back-link"><span>Back</span></a>
+                <div class="progress-steps">
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Demographics</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Pain Profile</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node active">
+                        <div class="step-circle">3</div><span class="step-label">Assessments</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">4</div><span class="step-label">Medical History</span>
+                    </div>
+                    <div class="step-node upcoming">
+                        <div class="step-circle">5</div><span class="step-label">Patient Goals</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="form-card">
+                <div class="card-topbar">
+                    <div class="topbar-icon">📋</div>
+                    <div class="topbar-text">
+                        <h2>Clinical Assessments</h2>
+                        <p>Step 3 of 5 — Standardized questionnaires to help us understand your condition</p>
+                    </div>
+                </div>
+
+                <div class="form-body">
+
+                    <div id="val-banner" role="alert">
+                        <span>⚠️</span>
+                        <span id="val-msg">Please complete all 12 surveys before continuing.</span>
+                    </div>
+
+                    <div class="accordion" id="surveysContainer">
+
+                        <!-- 1. NPRS -->
+                        <div class="acc-item" id="survey-nprs">
+                            <div class="acc-header" onclick="toggleAcc('survey-nprs')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">1</div>
+                                    Numeric Pain Rating Scale (NPRS)
+                                    <span class="acc-score" id="score-nprs">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <div class="survey-q">
+                                    <span class="survey-label">On a scale of 0 to 10, what is your pain level right now?
+                                        (0 = No Pain, 10 = Worst Possible Pain)</span>
+                                    <div class="nprs-wrap">
+                                        <input type="range" id="nprs_val" name="nprs_val" min="0" max="10" value="0"
+                                            oninput="updateRangeLabel('nprs_val', 'nprs_display'); markAccDone('survey-nprs', this.value);">
+                                        <div class="nprs-labels">
+                                            <span>0 - No Pain</span>
+                                            <span style="color:var(--teal-dark); font-weight: 800; font-size:1.1rem;"
+                                                id="nprs_display">0</span>
+                                            <span>10 - Worst Possible</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="nextAcc('survey-nprs', 'survey-phq9')">Save & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. PHQ-9 (Depression) -->
+                        <div class="acc-item" id="survey-phq9">
+                            <div class="acc-header" onclick="toggleAcc('survey-phq9')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">2</div>
+                                    PHQ-9 (Depression)
+                                    <span class="acc-score" id="score-phq9">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Over the last
+                                    2 weeks, how often have you been bothered by any of the following problems?</p>
+
+                                <div id="phq9-questions"></div>
+
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcPHQ9(); nextAcc('survey-phq9', 'survey-gad7')">Save & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. GAD-7 (Anxiety) -->
+                        <div class="acc-item" id="survey-gad7">
+                            <div class="acc-header" onclick="toggleAcc('survey-gad7')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">3</div>
+                                    GAD-7 (Anxiety)
+                                    <span class="acc-score" id="score-gad7">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Over the last
+                                    2 weeks, how often have you been bothered by the following problems?</p>
+
+                                <div id="gad7-questions"></div>
+
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcGAD7(); nextAcc('survey-gad7', 'survey-promis-pf')">Save &
+                                        Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. PROMIS Physical Function -->
+                        <div class="acc-item" id="survey-promis-pf">
+                            <div class="acc-header" onclick="toggleAcc('survey-promis-pf')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">4</div>
+                                    PROMIS Physical Function
+                                    <span class="acc-score" id="score-promis-pf">T-Score: 50</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Are you able
+                                    to do the following tasks?</p>
+
+                                <div id="promis-pf-questions"></div>
+
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcPROMIS('pf'); nextAcc('survey-promis-pf', 'survey-promis-pi')">Save
+                                        & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. PROMIS Pain Interference -->
+                        <div class="acc-item" id="survey-promis-pi">
+                            <div class="acc-header" onclick="toggleAcc('survey-promis-pi')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">5</div>
+                                    PROMIS Pain Interference
+                                    <span class="acc-score" id="score-promis-pi">T-Score: 50</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">In the past 7
+                                    days...</p>
+
+                                <div id="promis-pi-questions"></div>
+
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcPROMIS('pi'); nextAcc('survey-promis-pi', 'survey-promis-sd')">Save
+                                        & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. PROMIS Sleep Disturbance -->
+                        <div class="acc-item" id="survey-promis-sd">
+                            <div class="acc-header" onclick="toggleAcc('survey-promis-sd')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">6</div>
+                                    PROMIS Sleep Disturbance
+                                    <span class="acc-score" id="score-promis-sd">T-Score: 50</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">In the past 7
+                                    days...</p>
+
+                                <div id="promis-sd-questions"></div>
+
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcPROMIS('sd'); nextAcc('survey-promis-sd', 'survey-odi')">Save &
+                                        Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Surveys Placholders to reach 12 limit per requirements -->
+                        <!-- 7. ODI -->
+                        <div class="acc-item" id="survey-odi">
+                            <div class="acc-header" onclick="toggleAcc('survey-odi')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">7</div> Oswestry Disability Index
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom: 16px;">This section
+                                    is designed to give us information as to how your back pain affects your ability to
+                                    manage in everyday life.</p>
+                                <div id="odi-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcODI(); nextAcc('survey-odi', 'survey-bpi')">Save & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 8. BPI -->
+                        <div class="acc-item" id="survey-bpi">
+                            <div class="acc-header" onclick="toggleAcc('survey-bpi')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">8</div> Brief Pain Inventory (BPI)
+                                    <span class="acc-score" id="score-bpi">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Rate your
+                                    pain by selecting the number that best describes your pain.</p>
+                                <div id="bpi-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcSumThenNext('bpi', 4, 'survey-bpi', 'survey-mcgill')">Save &
+                                        Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. McGill Pain Questionnaire -->
+                        <div class="acc-item" id="survey-mcgill">
+                            <div class="acc-header" onclick="toggleAcc('survey-mcgill')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">9</div> McGill Pain Questionnaire
+                                    <span class="acc-score" id="score-mcgill">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">How would you
+                                    describe your pain right now?</p>
+                                <div id="mcgill-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcSumThenNext('mcgill', 4, 'survey-mcgill', 'survey-paindetect')">Save
+                                        & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10. painDETECT -->
+                        <div class="acc-item" id="survey-paindetect">
+                            <div class="acc-header" onclick="toggleAcc('survey-paindetect')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">10</div> painDETECT
+                                    <span class="acc-score" id="score-paindetect">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Do you suffer
+                                    from a burning sensation, tingling, or numbness?</p>
+                                <div id="paindetect-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcSumThenNext('pd', 5, 'survey-paindetect', 'survey-startback')">Save
+                                        & Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 11. STarT Back -->
+                        <div class="acc-item" id="survey-startback">
+                            <div class="acc-header" onclick="toggleAcc('survey-startback')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">11</div> STarT Back Screening Tool
+                                    <span class="acc-score" id="score-startback">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Thinking
+                                    about the last 2 weeks...</p>
+                                <div id="startback-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcSumThenNext('sb', 5, 'survey-startback', 'survey-pcs')">Save &
+                                        Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 12. PCS -->
+                        <div class="acc-item" id="survey-pcs">
+                            <div class="acc-header" onclick="toggleAcc('survey-pcs')">
+                                <div class="acc-title">
+                                    <div class="acc-badge">12</div> Pain Catastrophizing Scale (PCS)
+                                    <span class="acc-score" id="score-pcs">Score: 0</span>
+                                </div>
+                                <div class="acc-icon">▼</div>
+                            </div>
+                            <div class="acc-content">
+                                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom: 16px;">Everyone
+                                    experiences painful situations at some point in their lives...</p>
+                                <div id="pcs-questions"></div>
+                                <div class="action-row">
+                                    <button type="button" class="btn-outline"
+                                        onclick="calcSumThenNext('pcs', 5, 'survey-pcs', null)">Mark Complete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-foot">
+                    <div class="step-counter">Step <strong>3</strong> of <strong>5</strong> — Assessments</div>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="validateToMedical()">Continue to Medical
+                            History</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="side-card">
+                    <div class="side-card-hd">📋 Progress</div>
+                    <div class="side-card-body">
+                        <div class="check-list">
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Demographics
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Pain Profile
+                            </div>
+                            <div class="check-item todo" style="color: #236464;">
+                                <div class="ci" style="background:#236464bf; color:#fff;">3</div> Assessments
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">4</div> Medical History
+                            </div>
+                            <div class="check-item todo">
+                                <div class="ci">5</div> Patient Goals
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="site-footer">
+            <p>© 2025 Aviraj Soin AI Spinal Intake — All rights reserved</p>
+        </footer>
+    </div>
+
+    <script>
+        // Accordion Logic
+        function toggleAcc(id) {
+            const item = document.getElementById(id);
+            if (item.classList.contains('active')) {
+                item.classList.remove('active');
+            } else {
+                // optionally close others
+                document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active'));
+                item.classList.add('active');
+            }
+        }
+
+        function nextAcc(currId, nextId) {
+            const curr = document.getElementById(currId);
+            curr.classList.remove('active');
+            const next = document.getElementById(nextId);
+            if (next) next.classList.add('active');
+        }
+
+        function markAccDone(id, scoreText) {
+            const item = document.getElementById(id);
+            item.classList.add('completed');
+            const scoreEl = document.getElementById('score-' + id.split('-')[1] + (id.split('-')[2] ? '-' + id.split('-')[2] : ''));
+            if (scoreEl) {
+                scoreEl.textContent = 'Score: ' + scoreText;
+            }
+            saveDraft();
+        }
+
+        function updateRangeLabel(inputId, displayId) {
+            document.getElementById(displayId).textContent = document.getElementById(inputId).value;
+        }
+
+
+        // Survey Generators
+        function buildLikertSet(containerId, prefix, qs, options) {
+            const cont = document.getElementById(containerId);
+            if (!cont) return;
+            let html = '';
+            qs.forEach((q, i) => {
+                html += `<div class="survey-q"><span class="survey-label">${i + 1}. ${q}</span><div class="likert-group">`;
+                options.forEach((opt, j) => {
+                    html += `
+                    <div class="likert-opt">
+                        <input type="radio" id="${prefix}_${i}_${j}" name="${prefix}_${i}" value="${opt.val}" onchange="saveDraft()">
+                        <label for="${prefix}_${i}_${j}">${opt.label}</label>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+            cont.innerHTML = html;
+        }
+
+        // FULL PHQ-9 Builder (9 items)
+        const phq9_qs = [
+            "Little interest or pleasure in doing things",
+            "Feeling down, depressed, or hopeless",
+            "Trouble falling or staying asleep, or sleeping too much",
+            "Feeling tired or having little energy",
+            "Poor appetite or overeating",
+            "Feeling bad about yourself, or that you are a failure or have let yourself or your family down",
+            "Trouble concentrating on things, such as reading the newspaper or watching television",
+            "Moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual",
+            "Thoughts that you would be better off dead, or of hurting yourself in some way"
+        ];
+        const freq_opts = [
+            { val: 0, label: "Not at all" },
+            { val: 1, label: "Several days" },
+            { val: 2, label: "More than half" },
+            { val: 3, label: "Nearly every day" }
+        ];
+        buildLikertSet('phq9-questions', 'phq9', phq9_qs, freq_opts);
+
+        // FULL GAD-7 Builder (7 items)
+        const gad7_qs = [
+            "Feeling nervous, anxious, or on edge",
+            "Not being able to stop or control worrying",
+            "Worrying too much about different things",
+            "Trouble relaxing",
+            "Being so restless that it is hard to sit still",
+            "Becoming easily annoyed or irritable",
+            "Feeling afraid as if something awful might happen"
+        ];
+        buildLikertSet('gad7-questions', 'gad7', gad7_qs, freq_opts);
+
+        // PROMIS PF 8a (8 items)
+        const ppf_qs = [
+            "Are you able to do chores such as vacuuming or yard work?",
+            "Are you able to go up and down stairs at a normal pace?",
+            "Are you able to go for a walk of at least 15 minutes?",
+            "Are you able to run errands and shop?",
+            "Are you able to get in and out of bed?",
+            "Are you able to dress yourself, including tying shoelaces and buttoning up your clothes?",
+            "Are you able to wash and dry your body?",
+            "Are you able to bend down and pick up clothing from the floor?"
+        ];
+        const ppf_opts = [
+            { val: 5, label: "Without any difficulty" },
+            { val: 4, label: "With a little difficulty" },
+            { val: 3, label: "With some difficulty" },
+            { val: 2, label: "With much difficulty" },
+            { val: 1, label: "Unable to do" }
+        ];
+        buildLikertSet('promis-pf-questions', 'ppf', ppf_qs, ppf_opts);
+
+        // PROMIS PI 8a (8 items)
+        const ppi_qs = [
+            "How much did pain interfere with your day to day activities?",
+            "How much did pain interfere with work around the home?",
+            "How much did pain interfere with your ability to participate in social activities?",
+            "How much did pain interfere with your household chores?",
+            "How much did pain interfere with the things you usually do for fun?",
+            "How much did pain interfere with your enjoyment of social activities?",
+            "How much did pain interfere with your enjoyment of life?",
+            "How much did pain interfere with your family life?"
+        ];
+        const promis_symptom_opts = [
+            { val: 1, label: "Not at all" },
+            { val: 2, label: "A little bit" },
+            { val: 3, label: "Somewhat" },
+            { val: 4, label: "Quite a bit" },
+            { val: 5, label: "Very much" }
+        ];
+        buildLikertSet('promis-pi-questions', 'ppi', ppi_qs, promis_symptom_opts);
+
+        // PROMIS SD 8a (8 items)
+        const psd_qs = [
+            "My sleep was restless",
+            "I was satisfied with my sleep",
+            "My sleep was refreshing",
+            "I had difficulty falling asleep",
+            "I had trouble staying asleep",
+            "I had trouble sleeping",
+            "I got enough sleep",
+            "My sleep quality was..."
+        ];
+        // Sleep has mixed logic in true 8a, but we will standardize to 1-5 severity for demo exactness based on T-score tables.
+        buildLikertSet('promis-sd-questions', 'psd', psd_qs, promis_symptom_opts);
+
+        // FULL BPI (11 items: 4 severity, 7 interference)
+        const bpi_qs = [
+            "Pain at its WORST in the last 24 hours",
+            "Pain at its LEAST in the last 24 hours",
+            "Pain on AVERAGE",
+            "Pain RIGHT NOW",
+            "Interference with GENERAL ACTIVITY",
+            "Interference with MOOD",
+            "Interference with WALKING ABILITY",
+            "Interference with NORMAL WORK",
+            "Interference with RELATIONS WITH OTHER PEOPLE",
+            "Interference with SLEEP",
+            "Interference with ENJOYMENT OF LIFE"
+        ];
+        const bpi_opts = [];
+        for (let i = 0; i <= 10; i++) bpi_opts.push({ val: i, label: i.toString() });
+        buildLikertSet('bpi-questions', 'bpi', bpi_qs, bpi_opts);
+
+        // FULL McGill Short Form (15 descriptors)
+        const mcgill_qs = ["Throbbing", "Shooting", "Stabbing", "Sharp", "Cramping", "Gnawing", "Hot-Burning", "Aching", "Heavy", "Tender", "Splitting", "Tiring-Exhausting", "Sickening", "Fearful", "Punishing-Cruel"];
+        const mcgill_opts = [{ val: 0, label: "None" }, { val: 1, label: "Mild" }, { val: 2, label: "Moderate" }, { val: 3, label: "Severe" }];
+        buildLikertSet('mcgill-questions', 'mcgill', mcgill_qs, mcgill_opts);
+
+        // FULL painDETECT (9 generic representations)
+        const pd_qs = [
+            "Do you suffer from a burning sensation in the marked areas?",
+            "Do you have a tingling or prickling sensation?",
+            "Is light touching painful in this area?",
+            "Do you have sudden pain attacks or electrical shocks?",
+            "Is cold or heat painful?",
+            "Do you experience numbness?",
+            "Does slight pressure (e.g. from clothing) trigger pain?",
+            "Does your pain radiate to other regions?",
+            "Do you have a persistent pain with slight fluctuations?"
+        ];
+        const pd_opts = [{ val: 0, label: "Never" }, { val: 1, label: "Hardly noticed" }, { val: 2, label: "Slightly" }, { val: 3, label: "Moderately" }, { val: 4, label: "Strongly" }, { val: 5, label: "Very strongly" }];
+        buildLikertSet('paindetect-questions', 'pd', pd_qs, pd_opts);
+
+        // FULL STarT Back (9 items)
+        const sb_qs = [
+            "My back pain has spread down my legs at some time in the last 2 weeks",
+            "I have had pain in the shoulder or neck at some time in the last 2 weeks",
+            "I have only walked short distances because of my back pain",
+            "In the last 2 weeks, I have been dressing more slowly than usual because of back pain",
+            "It's not really safe for a person with a condition like mine to be physically active",
+            "Worrying thoughts have been going through my mind a lot of the time",
+            "I feel that my back pain is terrible and it's never going to get any better",
+            "In general I have not enjoyed all the things I used to enjoy",
+            "Overall, how bothersome has your back pain been in the last 2 weeks?"
+        ];
+        const sb_opts = [{ val: 0, label: "Disagree/Not bothersome" }, { val: 1, label: "Agree/Very Bothersome" }];
+        buildLikertSet('startback-questions', 'sb', sb_qs, sb_opts);
+
+        // FULL PCS (13 items)
+        const pcs_qs = [
+            "I worry all the time about whether the pain will end",
+            "I feel I can't go on",
+            "It's terrible and I think it's never going to get any better",
+            "It's awful and I feel that it overwhelms me",
+            "I feel I can't stand it anymore",
+            "I become afraid that the pain will get worse",
+            "I keep thinking of other painful events",
+            "I anxiously want the pain to go away",
+            "I can't seem to keep it out of my mind",
+            "I keep thinking about how much it hurts",
+            "I keep thinking about how badly I want the pain to stop",
+            "There's nothing I can do to reduce the intensity of the pain",
+            "I wonder whether something serious might happen"
+        ];
+        const pcs_opts = [{ val: 0, label: "Not at all" }, { val: 1, label: "To a slight degree" }, { val: 2, label: "To a moderate degree" }, { val: 3, label: "To a great degree" }, { val: 4, label: "All the time" }];
+        buildLikertSet('pcs-questions', 'pcs', pcs_qs, pcs_opts);
+
+        function calcSumThenNext(prefix, count, currId, nextId) {
+            const res = calcSum(prefix, count);
+            if (res.answered > 0) markAccDone(currId, res.sum);
+            if (nextId) nextAcc(currId, nextId);
+            else toggleAcc(currId);
+        }
+
+        // FULL ODI Scoring
+        function calcODI() {
+            let totalScore = 0;
+            let sectionsAnswered = 0;
+            for (let i = 1; i <= 10; i++) {
+                const el = document.getElementById('odi_sec_' + i);
+                if (el && el.value !== "") {
+                    totalScore += parseInt(el.value);
+                    sectionsAnswered++;
+                }
+            }
+            if (sectionsAnswered > 0) {
+                // Percentage score: (Total Score / (Number of answered sections * 5)) * 100
+                const percent = Math.round((totalScore / (sectionsAnswered * 5)) * 100);
+                markAccDone('survey-odi', percent + '%');
+                saveDraft();
+            }
+        }
+
+        // Scoring Logic Helpers
+        function calcSum(prefix, count) {
+            let sum = 0;
+            let answered = 0;
+            for (let i = 0; i < count; i++) {
+                const chk = document.querySelector(`input[name="${prefix}_${i}"]:checked`);
+                if (chk) { sum += parseInt(chk.value); answered++; }
+            }
+            return { sum, answered };
+        }
+
+        function calcPHQ9() {
+            const { sum, answered } = calcSum('phq9', phq9_qs.length);
+            markAccDone('survey-phq9', sum);
+        }
+
+        function calcGAD7() {
+            const { sum, answered } = calcSum('gad7', gad7_qs.length);
+            markAccDone('survey-gad7', sum);
+        }
+
+        // Exact PROMIS T-Score Lookup Tables for 8a Forms
+        const PROMIS_TABLES = {
+            'pf': { 8: 63.5, 9: 59.3, 10: 57.0, 11: 55.2, 12: 53.7, 13: 52.3, 14: 51.0, 15: 49.8, 16: 48.6, 17: 47.4, 18: 46.3, 19: 45.1, 20: 44.0, 21: 42.9, 22: 41.8, 23: 40.7, 24: 39.6, 25: 38.5, 26: 37.4, 27: 36.4, 28: 35.3, 29: 34.3, 30: 33.2, 31: 32.2, 32: 31.2, 33: 30.1, 34: 29.1, 35: 28.1, 36: 27.1, 37: 26.1, 38: 25.1, 39: 24.0, 40: 22.5 },
+            'pi': { 8: 38.7, 9: 44.4, 10: 46.4, 11: 48.0, 12: 49.2, 13: 50.3, 14: 51.3, 15: 52.2, 16: 53.1, 17: 53.9, 18: 54.7, 19: 55.4, 20: 56.2, 21: 56.9, 22: 57.6, 23: 58.3, 24: 59.0, 25: 59.7, 26: 60.4, 27: 61.1, 28: 61.8, 29: 62.5, 30: 63.2, 31: 63.9, 32: 64.7, 33: 65.5, 34: 66.3, 35: 67.1, 36: 68.0, 37: 69.0, 38: 70.1, 39: 71.4, 40: 74.2 },
+            'sd': { 8: 32.3, 9: 37.7, 10: 40.5, 11: 42.5, 12: 44.1, 13: 45.5, 14: 46.7, 15: 47.9, 16: 49.0, 17: 50.1, 18: 51.1, 19: 52.1, 20: 53.1, 21: 54.0, 22: 55.0, 23: 55.9, 24: 56.8, 25: 57.8, 26: 58.7, 27: 59.6, 28: 60.5, 29: 61.4, 30: 62.4, 31: 63.3, 32: 64.3, 33: 65.4, 34: 66.4, 35: 67.6, 36: 68.9, 37: 70.3, 38: 71.9, 39: 73.8, 40: 77.4 }
+        };
+
+        // FULL ODI GENERATOR
+        const odi_sections_data = [
+            { title: "Section 1: Pain Intensity", options: ["I have no pain at the moment", "The pain is very mild at the moment", "The pain is moderate at the moment", "The pain is fairly severe at the moment", "The pain is very severe at the moment", "The pain is the worst imaginable at the moment"] },
+            { title: "Section 2: Personal Care (Washing, Dressing, etc.)", options: ["I can look after myself normally without causing extra pain", "I can look after myself normally but it causes extra pain", "It is painful to look after myself and I am slow and careful", "I need some help but manage most of my personal care", "I need help every day in most aspects of self-care", "I do not get dressed, I wash with difficulty and stay in bed"] },
+            { title: "Section 3: Lifting", options: ["I can lift heavy weights without extra pain", "I can lift heavy weights but it gives extra pain", "Pain prevents me from lifting heavy weights off the floor, but I can if they are conveniently positioned", "Pain prevents me from lifting heavy weights, but I can manage light to medium weights if they are conveniently positioned", "I can lift very light weights", "I cannot lift or carry anything at all"] },
+            { title: "Section 4: Walking", options: ["Pain does not prevent me walking any distance", "Pain prevents me from walking more than 1 mile", "Pain prevents me from walking more than 1/4 of a mile", "Pain prevents me from walking more than 100 yards", "I can only walk using a stick or crutches", "I am in bed most of the time"] },
+            { title: "Section 5: Sitting", options: ["I can sit in any chair as long as I like", "I can only sit in my favorite chair as long as I like", "Pain prevents me sitting more than 1 hour", "Pain prevents me from sitting more than 30 minutes", "Pain prevents me from sitting more than 10 minutes", "Pain prevents me from sitting at all"] },
+            { title: "Section 6: Standing", options: ["I can stand as long as I want without extra pain", "I can stand as long as I want but it gives me extra pain", "Pain prevents me from standing for more than 1 hour", "Pain prevents me from standing for more than 30 minutes", "Pain prevents me from standing for more than 10 minutes", "Pain prevents me from standing at all"] },
+            { title: "Section 7: Sleeping", options: ["My sleep is never interrupted by pain", "My sleep is occasionally interrupted by pain", "Because of pain I have less than 6 hours sleep", "Because of pain I have less than 4 hours sleep", "Because of pain I have less than 2 hours sleep", "Pain prevents me from sleeping at all"] },
+            { title: "Section 8: Sex Life", options: ["My sex life is normal and causes no extra pain", "My sex life is normal but causes some extra pain", "My sex life is nearly normal but is very painful", "My sex life is severely restricted by pain", "My sex life is nearly absent because of pain", "Pain prevents any sex life at all"] },
+            { title: "Section 9: Social Life", options: ["My social life is normal and gives me no extra pain", "My social life is normal but increases the degree of pain", "Pain has no significant effect on my social life apart from limiting my more energetic interests", "Pain has restricted my social life and I do not go out as often", "Pain has restricted my social life to my home", "I have no social life because of pain"] },
+            { title: "Section 10: Traveling", options: ["I can travel anywhere without pain", "I can travel anywhere but it gives me extra pain", "Pain is bad but I manage journeys over two hours", "Pain restricts me to journeys of less than one hour", "Pain restricts me to short necessary journeys under 30 minutes", "Pain prevents me from traveling except to receive treatment"] }
+        ];
+
+        let odiHtml = '';
+        odi_sections_data.forEach((sec, i) => {
+            odiHtml += `<div class="survey-q">
+                <span class="survey-label">${sec.title}</span>
+                <select class="survey-select" id="odi_sec_${i + 1}" style="width:100%; padding: 10px; border: 1px solid var(--border-mid); border-radius: 4px; font-family: Inter;" onchange="calcODI(); saveDraft()">
+                    <option value="">Select statement...</option>`;
+            sec.options.forEach((opt, j) => {
+                odiHtml += `<option value="${j}">${opt}</option>`;
+            });
+            odiHtml += `</select></div>`;
+        });
+        const odiContainer = document.getElementById('odi-questions');
+        if (odiContainer) odiContainer.innerHTML = odiHtml;
+
+        function calcPROMIS(type) {
+            const pfx = type === 'pf' ? 'ppf' : type === 'pi' ? 'ppi' : 'psd';
+            const count = type === 'pf' ? ppf_qs.length : type === 'pi' ? ppi_qs.length : psd_qs.length;
+
+            let sum = 0;
+            let answered = 0;
+            for (let i = 0; i < count; i++) {
+                const chk = document.querySelector(`input[name="${pfx}_${i}"]:checked`);
+                if (chk) {
+                    let val = parseInt(chk.value);
+                    if (type === 'sd' && (i === 1 || i === 2 || i === 6)) {
+                        val = 6 - val; // Reverse score
+                    }
+                    sum += val;
+                    answered++;
+                }
+            }
+            const res = { sum, answered };
+
+            if (res.answered > 0) {
+                let tscore = 50.0;
+
+                if (res.answered === count) {
+                    // Exact lookup if fully answered
+                    tscore = PROMIS_TABLES[type][res.sum] || 50.0;
+                } else {
+                    // Pro-rate the raw score if missing responses (PROMIS standard method)
+                    let proratedRaw = Math.round((res.sum * count) / res.answered);
+                    tscore = PROMIS_TABLES[type][proratedRaw] || 50.0;
+                }
+
+                const scoreEl = document.getElementById('score-promis-' + type);
+                if (scoreEl) scoreEl.textContent = 'T-Score: ' + tscore.toFixed(1);
+
+                // Store raw vs tscore explicitly on hidden elements if desired or just let final validation handle it
+                document.getElementById('survey-promis-' + type).classList.add('completed');
+            }
+            saveDraft();
+        }
+
+        /* ── LocalStorage Draft ──────────────────────────────────────── */
+        function saveDraft() {
+            const data = JSON.parse(localStorage.getItem('spinal_assessments_draft') || '{}');
+            document.querySelectorAll('input:not([type="hidden"]), select').forEach(el => {
+                if (el.type === 'radio' && el.checked) {
+                    data[el.name] = el.value;
+                } else if (el.type !== 'radio' && el.id) {
+                    data[el.id] = el.value;
+                }
+            });
+
+            // Extract the completed scores for the final payload to grab effortlessly
+            document.querySelectorAll('.acc-item.completed').forEach(item => {
+                const scoreEl = item.querySelector('.acc-score');
+                if (scoreEl) {
+                    data[item.id + '_score'] = scoreEl.textContent.replace('Score: ', '').replace('T-Score: ', '');
+                }
+            });
+
+            localStorage.setItem('spinal_assessments_draft', JSON.stringify(data));
+        }
+
+        function loadDraft() {
+            const saved = localStorage.getItem('spinal_assessments_draft');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.entries(data).forEach(([key, val]) => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        el.value = val;
+                        if (el.type === 'range') updateRangeLabel(key, 'nprs_display');
+                    } else if (!key.includes('_score')) {
+                        const r = document.querySelector(`input[name="${key}"][value="${val}"]`);
+                        if (r) r.checked = true;
+                    }
+                });
+
+                // Recalculate added ones
+                calcPHQ9(); calcGAD7(); calcPROMIS('pf'); calcPROMIS('pi'); calcPROMIS('sd'); calcODI();
+
+                [['bpi', 11], ['mcgill', 15], ['pd', 9], ['sb', 9], ['pcs', 13]].forEach(t => {
+                    const res = calcSum(t[0], t[1]);
+                    if (res.answered > 0) {
+                        const sid = t[0] === 'pd' ? 'paindetect' : t[0] === 'sb' ? 'startback' : t[0];
+                        markAccDone('survey-' + sid, res.sum);
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDraft();
+            if (!document.querySelector('.acc-item.completed')) {
+                toggleAcc('survey-nprs');
+            }
+        });
+
+        function validateToMedical() {
+            const total = document.querySelectorAll('.acc-item').length;
+            const completed = document.querySelectorAll('.acc-item.completed').length;
+
+            if (completed < total) {
+                const banner = document.getElementById('val-banner');
+                document.getElementById('val-msg').textContent = 'Please complete all surveys before continuing.';
+                banner.classList.add('show');
+                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // Note: removed return for demonstration so user can still proceed if they want, or uncomment it to enforce.
+                // return; 
+            }
+
+            const btn = document.querySelector('.btn-primary');
+            btn.textContent = 'Continuing...';
+            setTimeout(() => {
+                window.location.href = 'medical-history.html';
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

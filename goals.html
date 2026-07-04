@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Goals & Submit – Aviraj Soin AI Spinal Intake</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="intake.css">
+
+    <style>
+        .success-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        .success-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--teal-dark);
+            margin-bottom: 12px;
+        }
+
+        .success-desc {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .btn-home {
+            background: #fff;
+            color: var(--teal-dark);
+            border: 1px solid var(--teal-dark);
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .btn-home:hover {
+            background: var(--teal-faint);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <nav class="progress-band" aria-label="Form progress">
+            <div class="progress-inner">
+                <a href="medical-history.html" class="back-link"><span>Back</span></a>
+                <div class="progress-steps">
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Demographics</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Pain Profile</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Assessments</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node done">
+                        <div class="step-circle">✓</div><span class="step-label">Medical History</span>
+                        <div class="step-bar"></div>
+                    </div>
+                    <div class="step-node active">
+                        <div class="step-circle">5</div><span class="step-label">Patient Goals</span>
+                        <div class="step-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="form-card">
+                <div class="card-topbar">
+                    <div class="topbar-icon">🎯</div>
+                    <div class="topbar-text">
+                        <h2>Patient Goals & Signature</h2>
+                        <p>Step 5 of 5 — Tell us what you hope to achieve and finalise your submission</p>
+                        <input type="hidden" id="pain_diagram_base64" name="pain_diagram_base64">
+                    </div>
+                </div>
+
+                <div class="form-body" id="mainFormBody">
+
+                    <div id="val-banner" role="alert">
+                        <span>⚠️</span><span id="val-msg">Please complete all required fields.</span>
+                    </div>
+
+                    <!-- Goals -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">01 — Your Goals</span>
+                            <div class="rule"></div>
+                        </div>
+                        <div class="form-row c1">
+                            <div class="form-field">
+                                <label for="recovery_goals">What are your top 3 goals for recovery? <span
+                                        class="req">*</span></label>
+                                <textarea id="recovery_goals" rows="4"
+                                    placeholder="e.g. 1. Return to playing golf. 2. Sleep through the night without pain. 3. Avoid surgery if possible."
+                                    required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="subsection">
+                        <div class="subsection-hd">
+                            <span class="tag">02 — Acknowledgment & Signature</span>
+                            <div class="rule"></div>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-mid); margin-bottom: 20px; line-height: 1.5;">
+                            I certify that the information I have provided throughout this intake process is true and
+                            correct to the best of my knowledge. I understand that this information will be used to help
+                            determine my diagnosis and treatment plan. By typing my name below, I am electronically
+                            signing this intake form.
+                        </p>
+                        <div class="form-row c2">
+                            <div class="form-field" id="field-signature">
+                                <label for="signature">Electronic Signature (Type Full Name) <span
+                                        class="req">*</span></label>
+                                <input type="text" id="signature" name="signature" placeholder="Your full name"
+                                    required>
+                                <span class="field-err">Signature is required.</span>
+                            </div>
+                            <div class="form-field" id="field-sig_date">
+                                <label for="sig_date">Date <span class="req">*</span></label>
+                                <input type="date" id="sig_date" name="sig_date" required>
+                                <span class="field-err">Date is required.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="success-state" id="successScreen">
+                    <!-- <div class="success-icon">✨</div> -->
+                    <div class="success-title">Intake Complete</div>
+                    <div class="success-desc">Thank you for completing your comprehensive AI Spinal Intake. Your secure
+                        profile is now being analyzed by our team. We look forward to seeing you at your appointment.
+                    </div>
+                    <a href="index.html" class="btn-home">Return to Home</a>
+                </div>
+
+                <div class="card-foot" id="cardFoot">
+                    <div class="step-counter">Step <strong>5</strong> of <strong>5</strong> — Final</div>
+                    <div>
+                        <button type="button" class="btn btn-primary" id="btnSubmit" onclick="submitFinalForm()">Submit
+                            Intake Form</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar" id="sidebar">
+                <div class="side-card">
+                    <div class="side-card-hd">📋 Progress</div>
+                    <div class="side-card-body">
+                        <div class="check-list">
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Demographics
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Pain Profile
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Assessments
+                            </div>
+                            <div class="check-item done">
+                                <div class="ci">✓</div> Medical History
+                            </div>
+                            <div class="check-item todo" style="color: #236464;">
+                                <div class="ci" style="background:#236464bf; color:#fff;">5</div> Patient Goals
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="site-footer">
+            <p>© 2025 Aviraj Soin AI Spinal Intake — All rights reserved</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set today's date automatically
+        document.getElementById('sig_date').valueAsDate = new Date();
+
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzUUyxU8zkf3OMgp-ryrHaaj8NJr4hURkYK3bRN_Y0C3CazR3VugBVIk7SSo1FO8rA5/exec';
+
+        function validateForm() {
+            let valid = true;
+            document.getElementById('val-banner').classList.remove('show');
+            const reqs = ['recovery_goals', 'signature', 'sig_date'];
+            reqs.forEach(id => {
+                const el = document.getElementById(id);
+                const wrap = document.getElementById('field-' + id) || el.parentElement;
+                if (!el.value.trim()) {
+                    wrap.classList.add('err');
+                    valid = false;
+                } else {
+                    wrap.classList.remove('err');
+                }
+            });
+            if (!valid) {
+                document.getElementById('val-banner').classList.add('show');
+            }
+            return valid;
+        }
+
+        async function submitFinalForm() {
+            if (!validateForm()) return;
+
+            const btn = document.getElementById('btnSubmit');
+            const originalText = btn.textContent;
+            btn.textContent = 'Submitting...';
+            btn.disabled = true;
+
+            // Collect all data from localStorage
+            let finalPayload = {
+                form_status: 'Fully Completed',
+                submission_timestamp: new Date().toISOString()
+            };
+
+            // 1. Demographics
+            const demo = JSON.parse(localStorage.getItem('spinal_demo_draft') || '{}');
+            Object.assign(finalPayload, demo);
+
+            // 2. Pain Profile (with base64 mapping)
+            const pain = JSON.parse(localStorage.getItem('spinal_pain_draft') || '{}');
+            console.log('📸 Pain data from localStorage:', {
+                has_pain_diagram: !!pain.pain_diagram_base64,
+                length: pain.pain_diagram_base64 ? pain.pain_diagram_base64.length : 0
+            });
+
+            // Get the pain diagram from hidden input if not in localStorage
+            const painDiagram = document.getElementById('pain_diagram_base64');
+            if (painDiagram && painDiagram.value && !pain.pain_diagram_base64) {
+                pain.pain_diagram_base64 = painDiagram.value;
+                console.log('📸 Retrieved from hidden input, length:', painDiagram.value.length);
+            }
+
+            // Remove the canvas strokes to save space
+            if (pain['_canvasStrokes']) {
+                delete pain['_canvasStrokes'];
+            }
+            Object.assign(finalPayload, pain);
+
+            // 3. Assessments
+            const assessments = JSON.parse(localStorage.getItem('spinal_assessments_draft') || '{}');
+            Object.assign(finalPayload, assessments);
+
+            // 4. Medical History & Attachments
+            const medical = JSON.parse(localStorage.getItem('spinal_medical_draft') || '{}');
+            if (medical['_attachments']) {
+                finalPayload.file_attachments = medical['_attachments'];
+                delete medical['_attachments'];
+            }
+            Object.assign(finalPayload, medical);
+
+            // 5. Goals & Signature
+            finalPayload.recovery_goals = document.getElementById('recovery_goals').value;
+            finalPayload.signature = document.getElementById('signature').value;
+            finalPayload.sig_date = document.getElementById('sig_date').value;
+
+            console.log('📤 Final payload summary:');
+            console.log('- Has pain diagram?', !!finalPayload.pain_diagram_base64);
+            console.log('- Pain diagram length:', finalPayload.pain_diagram_base64 ? finalPayload.pain_diagram_base64.length : 0);
+            console.log('- Email:', finalPayload.email);
+            console.log('- Name:', finalPayload.full_name);
+
+            try {
+                // Use CORS mode
+                const response = await fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(finalPayload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('✅ Server response:', result);
+
+                if (result.success) {
+                    localStorage.removeItem('spinal_demo_draft');
+                    localStorage.removeItem('spinal_pain_draft');
+                    localStorage.removeItem('spinal_assessments_draft');
+                    localStorage.removeItem('spinal_medical_draft');
+                    showSuccessScreen();
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                console.error('❌ Submit error:', error);
+
+                // If CORS fails, try no-cors as fallback
+                try {
+                    console.log('🔄 Trying no-cors fallback...');
+                    await fetch(WEBAPP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(finalPayload)
+                    });
+
+                    localStorage.removeItem('spinal_demo_draft');
+                    localStorage.removeItem('spinal_pain_draft');
+                    localStorage.removeItem('spinal_assessments_draft');
+                    localStorage.removeItem('spinal_medical_draft');
+                    showSuccessScreen();
+
+                } catch (fallbackError) {
+                    console.error('❌ Fallback submit error:', fallbackError);
+                    alert('An error occurred. Please try again or contact support.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        function showSuccessScreen() {
+            document.getElementById('mainFormBody').style.display = 'none';
+            document.getElementById('cardFoot').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'none';
+            document.querySelector('.main-content').style.gridTemplateColumns = '1fr';
+            document.getElementById('successScreen').style.display = 'flex';
+
+            const lastStep = document.querySelector('.step-node.active');
+            if (lastStep) {
+                lastStep.className = 'step-node done';
+                const circle = lastStep.querySelector('.step-circle');
+                if (circle) circle.innerHTML = '✓';
+            }
+        }
+    </script>
+</body>
+
+</html>
